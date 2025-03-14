@@ -25,7 +25,7 @@ pipeline {
                 anyOf { branch "master"; branch "release" }
             }
             steps {
-                sh 'zip -r sbdl.zip lib'
+                bat 'powershell Compress-Archive -Path lib -DestinationPath sbdl.zip'
             }
         }
 
