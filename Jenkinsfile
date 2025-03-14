@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-               sh 'pipenv --python python3 sync'
+               sh 'C:/Users/hp/AppData/Local/Programs/Python/Python310/Scripts/pipenv --python python3 sync'
             }
         }
         stage('Test') {
