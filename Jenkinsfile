@@ -25,7 +25,14 @@ pipeline {
                 anyOf { branch "master"; branch "release" }
             }
             steps {
-                bat 'powershell Compress-Archive -Path lib -DestinationPath sbdl.zip'
+                script {
+                    def os = isUnix() ? 'linux' : 'windows'
+                    if (os == 'windows') {
+                        bat 'powershell Compress-Archive -Path lib -DestinationPath sbdl.zip'
+                    } else {
+                        sh 'zip -r sbdl.zip lib'
+                    }
+                }
             }
         }
 
@@ -34,17 +41,14 @@ pipeline {
                 branch 'release'
             }
             steps {
-                sh "scp -i /home/prashant/cred/edge-node_key.pem -o 'StrictHostKeyChecking no' -r sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf prashant@40.117.123.105:/home/prashant/sbdl-qa"
+                sh '''
+                scp -i /home/prashant/cred/edge-node_key.pem -o "StrictHostKeyChecking no" \
+                -r sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf \
+                prashant@40.117.123.105:/home/prashant/sbdl-qa
+                '''
             }
         }
 
         stage('Deploy') {
             when {
-                branch 'master'
-            }
-            steps {
-                sh "scp -i /home/prashant/cred/edge-node_key.pem -o 'StrictHostKeyChecking no' -r sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf prashant@40.117.123.105:/home/prashant/sbdl-prod"
-            }
-        }
-    }
-}
+                branch '
