@@ -2,21 +2,21 @@ pipeline {
     agent any
 
     environment {
-        HADOOP_HOME = "D://hadoop//hadoop-3.3.6"
-        PATH = "${env.PATH};D://hadoop//hadoop-3.3.6//bin"
+        HADOOP_HOME = "D:\\hadoop\\hadoop-3.3.6"
+        PATH = "${env.PATH};D:\\hadoop\\hadoop-3.3.6\\bin"
     }
 
     stages {
         stage('Build') {
             steps {
-                sh 'pipenv --python C:/Users/hp/AppData/Local/Programs/Python/Python310/python.exe sync'
+                bat 'pipenv --python C:\\Users\\hp\\AppData\\Local\\Programs\\Python\\Python310\\python.exe sync'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'export SPARK_UI_PORT=4050'
-                sh 'pipenv run pytest'
+                bat 'set SPARK_UI_PORT=4050'
+                bat 'pipenv run pytest'
             }
         }
 
@@ -41,10 +41,11 @@ pipeline {
                 branch "release"
             }
             steps {
-                sh """
-                mkdir -p /home/hp/sbdl-qa
-                cp -r sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf /home/hp/sbdl-qa
-                """
+                script {
+                    def releasePath = "C:\\Users\\hp\\sbdl-qa"
+                    bat "mkdir \"${releasePath}\""
+                    bat "xcopy /E /I sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf \"${releasePath}\""
+                }
             }
         }
 
@@ -53,10 +54,11 @@ pipeline {
                 branch "master"
             }
             steps {
-                sh """
-                mkdir -p /home/hp/sbdl-prod
-                cp -r sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf /home/hp/sbdl-prod
-                """
+                script {
+                    def deployPath = "C:\\Users\\hp\\sbdl-prod"
+                    bat "mkdir \"${deployPath}\""
+                    bat "xcopy /E /I sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf \"${deployPath}\""
+                }
             }
         }
     }
