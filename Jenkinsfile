@@ -42,9 +42,8 @@ pipeline {
             }
             steps {
                 sh """
-                scp -i /home/prashant/cred/edge-node_key.pem -o "StrictHostKeyChecking no" \
-                -r sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf \
-                prashant@40.117.123.105:/home/prashant/sbdl-qa
+                mkdir -p /home/hp/sbdl-qa
+                cp -r sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf /home/hp/sbdl-qa
                 """
             }
         }
@@ -55,9 +54,8 @@ pipeline {
             }
             steps {
                 sh """
-                scp -i /home/prashant/cred/edge-node_key.pem -o "StrictHostKeyChecking no" \
-                -r sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf \
-                prashant@40.117.123.105:/home/prashant/sbdl-prod
+                mkdir -p /home/hp/sbdl-prod
+                cp -r sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf /home/hp/sbdl-prod
                 """
             }
         }
