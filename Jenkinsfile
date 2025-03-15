@@ -2,21 +2,21 @@ pipeline {
     agent any
 
     environment {
-        HADOOP_HOME = "D:\\hadoop\\hadoop-3.3.6"
-        PATH = "${env.PATH};D:\\hadoop\\hadoop-3.3.6\\bin"
+        HADOOP_HOME = "D://hadoop//hadoop-3.3.6"
+        PATH = "${env.PATH};D://hadoop//hadoop-3.3.6//bin"
     }
 
     stages {
         stage('Build') {
             steps {
-                bat 'pipenv --python C:\\Users\\hp\\AppData\\Local\\Programs\\Python\\Python310\\python.exe sync'
+                sh 'pipenv --python C:/Users/hp/AppData/Local/Programs/Python/Python310/python.exe sync'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'set SPARK_UI_PORT=4050'
-                bat 'pipenv run pytest'
+                sh 'export SPARK_UI_PORT=4050'
+                sh 'pipenv run pytest'
             }
         }
 
@@ -41,11 +41,11 @@ pipeline {
                 branch "release"
             }
             steps {
-                script {
-                    def releasePath = "C:\\Users\\hp\\sbdl-qa"
-                    bat "mkdir \"${releasePath}\""
-                    bat "xcopy /E /I sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf \"${releasePath}\""
-                }
+                bat '''
+                if not exist "C:\\Users\\hp\\sbdl-qa" mkdir "C:\\Users\\hp\\sbdl-qa"
+                robocopy . "C:\\Users\\hp\\sbdl-qa" sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf /E
+                exit 0
+                '''
             }
         }
 
@@ -54,11 +54,11 @@ pipeline {
                 branch "master"
             }
             steps {
-                script {
-                    def deployPath = "C:\\Users\\hp\\sbdl-prod"
-                    bat "mkdir \"${deployPath}\""
-                    bat "xcopy /E /I sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf \"${deployPath}\""
-                }
+                bat '''
+                if not exist "C:\\Users\\hp\\sbdl-prod" mkdir "C:\\Users\\hp\\sbdl-prod"
+                robocopy . "C:\\Users\\hp\\sbdl-prod" sbdl.zip log4j.properties sbdl_main.py sbdl_submit.sh conf /E
+                exit 0
+                '''
             }
         }
     }
